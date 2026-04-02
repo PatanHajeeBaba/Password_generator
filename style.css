@@ -1,0 +1,413 @@
+/* ─── RESET & BASE ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── FONTS ─── */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap');
+
+/* ─── VARIABLES ─── */
+:root {
+    --bg:         #0a0c10;
+    --surface:    #111318;
+    --surface2:   #181c24;
+    --border:     rgba(255,255,255,0.07);
+    --accent:     #00e5a0;
+    --accent2:    #00b8ff;
+    --text:       #e8eaf0;
+    --muted:      #5a6070;
+    --danger:     #ff4d6d;
+    --warn:       #ffb830;
+    --radius:     18px;
+    --radius-sm:  10px;
+    --mono:       'Space Mono', monospace;
+    --display:    'Syne', sans-serif;
+    --transition: 0.22s cubic-bezier(.4,0,.2,1);
+}
+
+/* ─── BODY ─── */
+body {
+    background-color: var(--bg);
+    font-family: var(--display);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    color: var(--text);
+}
+
+/* ─── BACKGROUND EFFECTS ─── */
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bg-glow {
+    position: fixed;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(ellipse at center,
+        rgba(0,229,160,0.10) 0%,
+        rgba(0,184,255,0.05) 40%,
+        transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ─── CARD ─── */
+#password-generator {
+    position: relative;
+    z-index: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 28px 28px;
+    width: 460px;
+    box-shadow:
+        0 0 0 1px rgba(0,229,160,0.06),
+        0 30px 80px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    animation: cardIn 0.6s cubic-bezier(.16,1,.3,1) both;
+}
+
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ─── HEADER ─── */
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.lock-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(0,229,160,0.15), rgba(0,184,255,0.10));
+    border: 1px solid rgba(0,229,160,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    margin-bottom: 12px;
+    box-shadow: 0 0 20px rgba(0,229,160,0.12);
+}
+
+.header h1 {
+    font-family: var(--display);
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.subtitle {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* ─── PASSWORD OUTPUT ─── */
+#password {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 10px;
+    background: var(--surface2);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+}
+
+#result {
+    padding: 14px 16px;
+    background: transparent;
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    font-weight: 700;
+    border: none;
+    outline: none;
+    letter-spacing: 0.05em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    transition: color var(--transition);
+}
+
+#copy-button {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: linear-gradient(135deg, rgba(0,229,160,0.15), rgba(0,184,255,0.10));
+    color: var(--accent);
+    padding: 14px 18px;
+    border: none;
+    border-left: 1px solid var(--border);
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    transition: background var(--transition), color var(--transition);
+    white-space: nowrap;
+}
+
+#copy-button:hover {
+    background: rgba(0,229,160,0.25);
+    color: #fff;
+}
+
+#copy-button:active {
+    background: rgba(0,229,160,0.35);
+}
+
+/* ─── STRENGTH BAR ─── */
+.strength-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.strength-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 100px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.strength-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 100px;
+    background: var(--muted);
+    transition: width 0.5s cubic-bezier(.4,0,.2,1), background 0.4s ease;
+}
+
+.strength-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-family: var(--mono);
+    min-width: 52px;
+    text-align: right;
+}
+
+/* ─── LENGTH SECTION ─── */
+.length-section {
+    margin-bottom: 20px;
+}
+
+.length-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+}
+
+.length-header label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+}
+
+.length-header o {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    min-width: 28px;
+    text-align: right;
+}
+
+/* ─── RANGE SLIDER ─── */
+#password-length {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 100px;
+    background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct, 0%), var(--surface2) var(--pct, 0%));
+    outline: none;
+    cursor: pointer;
+    border: 1px solid var(--border);
+}
+
+#password-length::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2.5px solid var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(0,229,160,0.4);
+    transition: box-shadow var(--transition), transform var(--transition);
+}
+
+#password-length::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 20px rgba(0,229,160,0.7);
+    transform: scale(1.15);
+}
+
+#password-length::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2.5px solid var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(0,229,160,0.4);
+}
+
+/* ─── OPTIONS GRID ─── */
+#options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 22px;
+}
+
+#options label {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+#options label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.option-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.option-icon {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+    min-width: 30px;
+    transition: color var(--transition);
+}
+
+.option-text {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color var(--transition);
+    letter-spacing: 0.02em;
+}
+
+/* checked state */
+#options label input:checked ~ .option-content {
+    background: rgba(0,229,160,0.08);
+    border-color: rgba(0,229,160,0.35);
+    box-shadow: 0 0 14px rgba(0,229,160,0.08);
+}
+
+#options label input:checked ~ .option-content .option-icon {
+    color: var(--accent);
+}
+
+#options label input:checked ~ .option-content .option-text {
+    color: var(--text);
+}
+
+#options label:hover .option-content {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.12);
+}
+
+/* ─── GENERATE BUTTON ─── */
+#generate-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent), #00c8ff);
+    color: #000;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+    box-shadow: 0 0 28px rgba(0,229,160,0.25), 0 4px 16px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+#generate-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent);
+    opacity: 0;
+    transition: opacity var(--transition);
+}
+
+#generate-button:hover {
+    opacity: 0.92;
+    transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(0,229,160,0.4), 0 8px 24px rgba(0,0,0,0.4);
+}
+
+#generate-button:hover::before { opacity: 1; }
+
+#generate-button:active {
+    transform: translateY(0);
+    box-shadow: 0 0 20px rgba(0,229,160,0.2);
+}
+
+.btn-arrow {
+    font-size: 1rem;
+    transition: transform var(--transition);
+}
+
+#generate-button:hover .btn-arrow {
+    transform: translateX(4px);
+}
+
+/* ─── SLIDER GRADIENT UPDATE (JS hook) ─── */
+/* Update via JS: el.style.setProperty('--pct', pct+'%') */
